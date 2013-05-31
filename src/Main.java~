@@ -1,0 +1,18 @@
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+
+
+public class Main
+{
+  public static void main(String[] args) throws Exception
+  {
+    JavaLexer lexer = new JavaLexer(new ANTLRFileStream(args[0]));
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    JavaParser p = new JavaParser(tokens);
+    p.setBuildParseTree(true);
+    p.addParseListener(new JavaBaseListener());
+    ParserRuleContext t = p.compilationUnit();
+  }
+}
