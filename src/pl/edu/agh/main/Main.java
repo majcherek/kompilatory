@@ -65,6 +65,16 @@ public class Main
 		    
 		    System.out.println();
 	  }
+	  
+	  GraphGenerator gen = new GraphGenerator("supergraf.png");
+	  try {
+		  gen.generate(classes);
+	  } catch (GraphException e)
+	  {
+		  System.out.println("Bład generowania grafu");
+		  e.printStackTrace();
+	  }
+	  
 
   }
 }

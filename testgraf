@@ -1,0 +1,13 @@
+@startuml
+ClientTCP <|-- BlahBlah
+ClientTCP <|.. Interface1
+ClientTCP <|.. Interface2
+ClientTCP <|.. Interface3
+
+ClientTCP: int port
+ClientTCP: String IP;
+ClientTCP: String[] IPparts;
+ClientTCP: byte[] IPbyte;
+ClientTCP: int main()
+ClientTCP: String getSth()
+@enduml
