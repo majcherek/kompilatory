@@ -2,6 +2,9 @@ package pl.edu.agh.antlr;
 // Generated from Java.g by ANTLR 4.0
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -20,6 +23,7 @@ public class JavaBaseListener implements JavaListener {
 	private Field field;
 	private Method method;
 	private String type;
+	private List<String> modifiers = new ArrayList<String>();
 	
 	public JavaBaseListener(Class c){
 		this.c=c;
@@ -199,6 +203,7 @@ public class JavaBaseListener implements JavaListener {
 		
 		field.setName(ctx.getText());
 		c.addField(field);
+		modifiers = new ArrayList<String>();
 		
 	}
 
@@ -309,6 +314,7 @@ public class JavaBaseListener implements JavaListener {
 		if(type== null){
 			type = ctx.getText();
 		}
+
 		
 	}
 
@@ -349,6 +355,8 @@ public class JavaBaseListener implements JavaListener {
 					Method method = new Method();
 					method.setName(parts[1].substring(0,j));
 					method.setReturnType("void");
+					method.setModifier(modifiers);
+					modifiers = new ArrayList<String>();
 					c.addMethod(method);
 				}
 			}
@@ -400,6 +408,8 @@ public class JavaBaseListener implements JavaListener {
 		}
 		if(method != null){
 			method.addModifier(ctx.getText());
+		}if(modifiers != null){
+			modifiers.add(ctx.getText());
 		}
 		
 	}
@@ -473,6 +483,7 @@ public class JavaBaseListener implements JavaListener {
 			field.setName(name);
 			field.setType(type);
 			c.addField(field);	
+			modifiers = new ArrayList<String>();
 			type=null;
 		}else{
 			int i = declaration.indexOf("(");
@@ -482,6 +493,7 @@ public class JavaBaseListener implements JavaListener {
 			method.setName(name);
 			method.setReturnType(type);
 			c.addMethod(method);
+			modifiers = new ArrayList<String>();
 			type=null;
 		}
 
@@ -521,6 +533,7 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void exitMethodDeclaration(JavaParser.MethodDeclarationContext ctx) {
 		method.setName(ctx.Identifier().toString());
 		c.addMethod(method);
+		modifiers = new ArrayList<String>();
 		
 	}
 
