@@ -32,8 +32,13 @@ public class Main
 		    p.addParseListener(new JavaBaseListener(c));
 		    ParserRuleContext t = p.compilationUnit();
 		    
-		   
-		    System.out.println(c.getModifier()+" class "+c.getName());
+		    
+		   if(c.isInterface){
+			   System.out.println(c.getModifier()+" interface "+c.getName());
+		   }else{
+			   System.out.println(c.getModifier()+" class "+c.getName());
+		   }
+		  
 		    
 		    System.out.println("extends "+c.getParentClass());
 		    System.out.print("implements ");
@@ -71,7 +76,7 @@ public class Main
 		  gen.generate(classes);
 	  } catch (GraphException e)
 	  {
-		  System.out.println("BÅ‚ad generowania grafu");
+		  System.out.println("B³¹d generowania grafu");
 		  e.printStackTrace();
 	  }
 	  

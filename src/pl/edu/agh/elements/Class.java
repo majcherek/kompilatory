@@ -7,6 +7,8 @@ import java.util.List;
 public class Class {
 	
 	
+	public boolean isInterface;
+	
 	private String name;
 	private String modifier;
 	private List<Field>fields;
@@ -14,10 +16,12 @@ public class Class {
 	private String parentClass;
 	private List<String> interfaces;
 	
+	
 	public Class(){
 		fields = new ArrayList<Field>();
 		methods = new ArrayList<Method>();
 		interfaces = new ArrayList<String>();
+		isInterface = false;
 	}
 	
 	public String getName() {
@@ -79,6 +83,7 @@ public class Class {
 		interfaces.add(interfaceName);
 		
 	}
+	
 	
 	
 

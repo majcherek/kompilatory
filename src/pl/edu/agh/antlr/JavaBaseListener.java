@@ -19,6 +19,7 @@ public class JavaBaseListener implements JavaListener {
 	private Class c;
 	private Field field;
 	private Method method;
+	private String type;
 	
 	public JavaBaseListener(Class c){
 		this.c=c;
@@ -128,7 +129,10 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void exitMethodDeclaratorRest(JavaParser.MethodDeclaratorRestContext ctx) {
 	}
 
-	@Override public void enterInterfaceBodyDeclaration(JavaParser.InterfaceBodyDeclarationContext ctx) { }
+	@Override public void enterInterfaceBodyDeclaration(JavaParser.InterfaceBodyDeclarationContext ctx) {
+		c.isInterface = true;
+		type=null;
+	}
 	@Override public void exitInterfaceBodyDeclaration(JavaParser.InterfaceBodyDeclarationContext ctx) { 
 	}
 
@@ -183,7 +187,8 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void exitConstantDeclaratorsRest(JavaParser.ConstantDeclaratorsRestContext ctx) { }
 
 	@Override public void enterInterfaceMethodOrFieldDecl(JavaParser.InterfaceMethodOrFieldDeclContext ctx) { }
-	@Override public void exitInterfaceMethodOrFieldDecl(JavaParser.InterfaceMethodOrFieldDeclContext ctx) {	}
+	@Override public void exitInterfaceMethodOrFieldDecl(JavaParser.InterfaceMethodOrFieldDeclContext ctx) {	
+	}
 
 	@Override public void enterLocalVariableDeclarationStatement(JavaParser.LocalVariableDeclarationStatementContext ctx) { }
 	@Override public void exitLocalVariableDeclarationStatement(JavaParser.LocalVariableDeclarationStatementContext ctx) { }
@@ -301,6 +306,9 @@ public class JavaBaseListener implements JavaListener {
 		if(method != null && method.getReturnType() == null){
 			method.setReturnType(ctx.getText());
 		}
+		if(type== null){
+			type = ctx.getText();
+		}
 		
 	}
 
@@ -331,6 +339,22 @@ public class JavaBaseListener implements JavaListener {
 
 	@Override public void enterClassBody(JavaParser.ClassBodyContext ctx) { }
 	@Override public void exitClassBody(JavaParser.ClassBodyContext ctx) { 
+		//System.out.println("class body" + ctx.getText());
+		String body = ctx.getText();
+		if( body.indexOf("void") != -1){
+			String[] parts = body.split("void");
+			for(int i=0; i< parts.length-1; i++){
+				if(parts[i+1].indexOf("(") != -1){
+					int j = parts[i+1].indexOf("(");
+					Method method = new Method();
+					method.setName(parts[1].substring(0,j));
+					method.setReturnType("void");
+					c.addMethod(method);
+				}
+			}
+
+			
+		}
 	}
 
 	@Override public void enterClassOrInterfaceModifier(JavaParser.ClassOrInterfaceModifierContext ctx) { }
@@ -439,14 +463,28 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void enterInterfaceMemberDecl(JavaParser.InterfaceMemberDeclContext ctx) {
 	}
 	@Override public void exitInterfaceMemberDecl(JavaParser.InterfaceMemberDeclContext ctx) {
-		if(ctx != null){
-			System.out.println("InterfaceMemberDecl " + ctx.getText());
-			method = new Method();
-			//method.setName(ctx.Identifier().toString());
-			c.addMethod(method);
+
+		String declaration = ctx.getText();
+		if(declaration.indexOf("=") != -1){
+			int i = declaration.indexOf("=");
+			String name = declaration.substring(type.length(), i);
+			//System.out.println(name);
+			field = new Field();
+			field.setName(name);
+			field.setType(type);
+			c.addField(field);	
+			type=null;
 		}else{
-			System.out.println("ctx is null");
+			int i = declaration.indexOf("(");
+			String name = declaration.substring(type.length(), i);
+			//System.out.println(name);
+			method = new Method();
+			method.setName(name);
+			method.setReturnType(type);
+			c.addMethod(method);
+			type=null;
 		}
+
 
 	}
 
@@ -476,7 +514,6 @@ public class JavaBaseListener implements JavaListener {
 
 	@Override public void enterVoidMethodDeclaratorRest(JavaParser.VoidMethodDeclaratorRestContext ctx) { }
 	@Override public void exitVoidMethodDeclaratorRest(JavaParser.VoidMethodDeclaratorRestContext ctx) {
-		//System.out.println("void method" +ctx.getText());
 	}
 
 	@Override public void enterMethodDeclaration(JavaParser.MethodDeclarationContext ctx) {
@@ -492,6 +529,7 @@ public class JavaBaseListener implements JavaListener {
 
 	@Override public void enterVoidInterfaceMethodDeclaratorRest(JavaParser.VoidInterfaceMethodDeclaratorRestContext ctx) { }
 	@Override public void exitVoidInterfaceMethodDeclaratorRest(JavaParser.VoidInterfaceMethodDeclaratorRestContext ctx) {
+		type = "void";
 	}
 
 	@Override public void enterElementValuePair(JavaParser.ElementValuePairContext ctx) { }
