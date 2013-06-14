@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.plantuml.SourceStringReader;
@@ -23,7 +24,7 @@ public class GraphGenerator {
 		this.fileName = fileName;
 	}
 
-	public void generate(List<Class> list) throws GraphException {
+	public void generate(List<Class> classList) throws GraphException {
 		// set up output
 		try {
 			png = new FileOutputStream(fileName);
@@ -32,23 +33,36 @@ public class GraphGenerator {
 			e.printStackTrace();
 		}
 		// generate graph code
-		for (Class c : list) {
+		for (Class c : classList) {
 			// extends
-			sourceB.append(c.getParentClass() + "<|--" + c.getName() + "\n");
+			String parentClass;
+			if (c.isInterface)
+				parentClass = ("Interface " + c.getParentClass());
+			else
+				parentClass = c.getParentClass();
+			if (parentClass != null)
+				sourceB.append(parentClass + "<|--" + c.getName() + "\n");
 			// implements
 			for (String interf : c.getInterfaces()) {
-				sourceB.append("Interface "+interf);
+				sourceB.append("Interface " + interf);
 				sourceB.append("<|.." + c.getName() + "\n");
 			}
 			// fields
 			for (Field f : c.getFields()) {
-				sourceB.append(c.getName() + ": " + f.getType() + " " + f.getName()
-						+ "\n");
+
+				// sourceB.append(getModifiersString(f.getModifiers()));
+				sourceB.append(c.getName() + ": "
+						+ getModifiersString(f.getModifiers()) + f.getType()
+						+ " " + f.getName() + "\n");
+				if (isClassOnList(f.getType(), classList)) {
+					sourceB.append(f.getType() + "--" + c.getName() + "\n");
+				}
 			}
 			// methods
 			for (Method m : c.getMethods()) {
-				sourceB.append(c.getName() + ": " + m.getReturnType() + " "
-						+ m.getName() + "()\n");
+				sourceB.append(c.getName() + ": "
+						+ getModifiersString(m.getModifiers())
+						+ m.getReturnType() + " " + m.getName() + "()\n");
 
 			}
 		}
@@ -66,5 +80,33 @@ public class GraphGenerator {
 		if (desc == null)
 			throw new GraphException();
 
+	}
+
+	private String getModifiersString(List<String> modifiers) {
+		StringBuilder modStr = new StringBuilder();
+		if (modifiers.contains("public"))
+			modStr.append("+");
+		else if (modifiers.contains("private"))
+			modStr.append("-");
+		else if (modifiers.contains("protected"))
+			modStr.append("#");
+		else
+			modStr.append("~");
+
+		if (modifiers.contains("static"))
+			modStr.append("{static}");
+		if (modifiers.contains("abstract"))
+			modStr.append("{abstract}");
+		return modStr.toString();
+	}
+
+	private boolean isClassOnList(String type, List<Class> classList) {
+		Iterator<Class> it = classList.iterator();
+		while (it.hasNext()) {
+			if (it.next().getName().equals(type))
+				return true;
+		}
+
+		return false;
 	}
 }

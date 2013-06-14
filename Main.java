@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ClientTCP extends BlahBlah implements Interface1, Inteface2, Interface3 {
+public class ClientTCP extends BlahBlah implements Interface1, Inteface2, ITest {
 
 	/**
 	 * @param args
@@ -13,7 +13,9 @@ public class ClientTCP extends BlahBlah implements Interface1, Inteface2, Interf
 	public int port;
 	private String IP;
 	protected String[] IPparts;
+	private SecondClass second;
 	byte[] IPbyte;
+	byte bytes[];
 	
 	public static int main(String[] args) {
 
@@ -39,11 +41,12 @@ public class ClientTCP extends BlahBlah implements Interface1, Inteface2, Interf
 
 	}
 	
-	public String getSth(){
+	public abstract String getSth(){
 		return "sth";
 	}
 	
-	public void setSth(String a, int b){
+	public abstract void setSth(String a, int b){
 
 	}
 }
+
