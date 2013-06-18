@@ -347,20 +347,20 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void enterClassBody(JavaParser.ClassBodyContext ctx) { }
 	@Override public void exitClassBody(JavaParser.ClassBodyContext ctx) { 
 		//System.out.println("class body" + ctx.getText());
-		String body = ctx.getText();
-		if( body.indexOf("void") != -1){
-			String[] parts = body.split("void");
-			for(int i=0; i< parts.length-1; i++){
-				if(parts[i+1].indexOf("(") != -1){
-					int j = parts[i+1].indexOf("(");
-					Method method = new Method();
-					method.setName(parts[1].substring(0,j));
-					method.setReturnType("void");
-					method.setModifier(modifiers);
-					modifiers = new ArrayList<String>();
-					c.addMethod(method);
-				}
-			}
+				String body = ctx.getText();
+				if( body.indexOf("void") != -1){
+					String[] parts = body.split("void");
+					for(int i=0; i< parts.length-1; i++){
+						if(parts[i+1].indexOf("(") != -1){
+							int j = parts[i+1].indexOf("(");
+							method = new Method();
+							method.setName(parts[i+1].substring(0,j));
+							method.setReturnType("void");
+							method.setModifier(modifiers);
+							modifiers = new ArrayList<String>();
+							c.addMethod(method);
+						}
+					}
 
 			
 		}
