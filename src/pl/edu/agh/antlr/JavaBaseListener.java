@@ -65,7 +65,7 @@ public class JavaBaseListener implements JavaListener {
 	}
 	@Override public void exitNormalClassDeclaration(JavaParser.NormalClassDeclarationContext ctx) {
 		
-		c.setName(packageName +"."+ctx.Identifier().toString());
+		c.setName(ctx.Identifier().toString());
 		
 		String declaration = ctx.getText();
 		int i = declaration.indexOf(ctx.classBody().getText());
@@ -209,6 +209,7 @@ public class JavaBaseListener implements JavaListener {
 
 	@Override public void enterNormalInterfaceDeclaration(JavaParser.NormalInterfaceDeclarationContext ctx) { }
 	@Override public void exitNormalInterfaceDeclaration(JavaParser.NormalInterfaceDeclarationContext ctx) { 
+		//c.setName(ctx.Identifier().toString());
 		c.setName(ctx.Identifier().toString());
 
 		
