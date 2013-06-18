@@ -69,7 +69,7 @@ public class Main {
 			System.out.println();
 		}
 
-		GraphGenerator gen = new GraphGenerator("supergraf.png");
+		GraphGenerator gen = new GraphGenerator("ice.png");
 		try {
 			gen.generate(classes);
 		} catch (GraphException e) {

@@ -24,6 +24,7 @@ public class JavaBaseListener implements JavaListener {
 	private Method method;
 	private String type;
 	private List<String> modifiers = new ArrayList<String>();
+	private String packageName;
 	
 	public JavaBaseListener(Class c){
 		this.c=c;
@@ -64,8 +65,7 @@ public class JavaBaseListener implements JavaListener {
 	}
 	@Override public void exitNormalClassDeclaration(JavaParser.NormalClassDeclarationContext ctx) {
 		
-		c.setName(ctx.Identifier().toString());
-
+		c.setName(packageName +"."+ctx.Identifier().toString());
 		
 		String declaration = ctx.getText();
 		int i = declaration.indexOf(ctx.classBody().getText());
@@ -386,7 +386,11 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void exitInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) { }
 
 	@Override public void enterPackageDeclaration(JavaParser.PackageDeclarationContext ctx) { }
-	@Override public void exitPackageDeclaration(JavaParser.PackageDeclarationContext ctx) { }
+	@Override public void exitPackageDeclaration(JavaParser.PackageDeclarationContext ctx) { 
+		String[] parts = ctx.getText().split("package");
+		this.packageName = parts[1].substring(0, parts[1].indexOf(";"));
+	
+	}
 
 	@Override public void enterConstantDeclaratorRest(JavaParser.ConstantDeclaratorRestContext ctx) { }
 	@Override public void exitConstantDeclaratorRest(JavaParser.ConstantDeclaratorRestContext ctx) { }
@@ -425,7 +429,9 @@ public class JavaBaseListener implements JavaListener {
 	@Override public void exitClassBodyDeclaration(JavaParser.ClassBodyDeclarationContext ctx) { }
 
 	@Override public void enterPackageOrTypeName(JavaParser.PackageOrTypeNameContext ctx) { }
-	@Override public void exitPackageOrTypeName(JavaParser.PackageOrTypeNameContext ctx) { }
+	@Override public void exitPackageOrTypeName(JavaParser.PackageOrTypeNameContext ctx) {
+	
+	}
 
 	@Override public void enterForControl(JavaParser.ForControlContext ctx) { }
 	@Override public void exitForControl(JavaParser.ForControlContext ctx) {
